@@ -4,12 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
+	private int id;
     private String title;  // 제목
     private String desc;  // 내용
     private String current_date;  // item이 생성되는 시간
     private String category;  // item 카테고리 
     private String due_date; // item 마감일자
 
+    public TodoItem(String category){  // constructor, item의 제목과 내용을 입력받아서 객체 생성
+    	this.category = category;
+    } 
+    
 
     public TodoItem(String category, String title, String desc, String due_date){  // constructor, item의 제목과 내용을 입력받아서 객체 생성
     	this.category = category;
@@ -29,6 +34,13 @@ public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
     } 
     
     // getter, setter
+    
+    public void setId(int id) {
+    	this.id=id;
+    }
+    public int getId() {
+    	return id;
+    }
     public String getCategory() {
 		return category;
 	}
@@ -69,13 +81,9 @@ public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
         this.current_date = current_date;
     }
     
-    public String toSaveString() {
-        return category + "##" + title + "##" + desc + "##" + due_date + "##" + current_date + "\n";
-    }    
-
 	@Override
 	public String toString() {
-		return "[ " + category + " ] / " + "[ 제목 ] : " + title + " / [ 내용 ] : " + desc + " / " + due_date + " / [ item 생성시간 ] : " + current_date;	
+		return id + ". " + "[ " + category + " ] / " + "[ 제목 ] : " + title + " / [ 내용 ] : " + desc + " << " + due_date + " >> [ item 생성시간 ] : " + current_date;	
 	}
     
 }

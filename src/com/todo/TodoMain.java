@@ -16,16 +16,14 @@ public class TodoMain {
 	
 		Scanner sc = new Scanner(System.in);
 		TodoList l = new TodoList();
-		boolean isList = false;
 		boolean quit = false;
 		
-		TodoUtil.loadList(l, "todolist.txt"); // file load
+		//TodoUtil.loadList(l, "todolist.txt"); // file load
 		
 		Menu.displaymenu();  // 메뉴 출력
 		do {
 			
 			Menu.prompt();
-			isList = false; // do while문을 실행할 때 isList가 true가 되는 과정이 있을 것임.
 			String str = sc.nextLine();
 			
 			StringTokenizer st = new StringTokenizer(str," ");
@@ -49,65 +47,62 @@ public class TodoMain {
 				TodoUtil.listAll(l);
 				break;
 
-			case "ls_name_asc":
-				l.sortByName();
-				System.out.println("제목순으로 정렬하였습니다.");
-				isList = true;
+			case "ls_name":
+				System.out.println("[ 알림 ] : 제목순으로 정렬하였습니다.");
+				TodoUtil.listAll(l,"title",1);
 				break;
 
 			case "ls_name_desc":
-				l.sortByName();
-				l.reverseList();
-				System.out.println("제목역순으로 정렬하였습니다.");
-				isList = true;  // 정렬을 완료하고나면 isList변수 값을 true로 설정
+				System.out.println("[ 알림 ] : 제목역순으로 정렬하였습니다.");
+				TodoUtil.listAll(l,"title",0);
 				break;
 				
 			case "ls_date":
-				l.sortByDate();
-				System.out.println("item 생성 순서대로 정렬하였습니다.");
-				isList = true;
+				System.out.println("[ 알림 ] : 마감기한이 얼마남지 않은 순서대로 정렬하였습니다.");
+				TodoUtil.listAll(l,"due_date",1);
 				break;
 
 			case "exit":
 				quit = true;
-				System.out.println("정상적으로 저장되었습니다.");
+				System.out.println("[ 알림 ] : 정상적으로 저장되었습니다.");
 				break;
 			
 			case "help":
 				Menu.displaymenu();
 				break;
 				
+			case "comp":
+				int comp = Integer.parseInt(st.nextToken());
+				TodoUtil.completeItem(l,comp);
+				break;
+				
+			case "ls_comp":
+				TodoUtil.listAll2(l);
+				break;
+				
 			case "find":
 				String find = st.nextToken();
-				l.find_keyword(find);
+				TodoUtil.findList(l,find);
 				break;			
 			
 			case "find_cate":
 				String f = st.nextToken();
-				l.find_cate(f);
+				TodoUtil.findCateList(l,f);
 				break;
 				
 			case "ls_date_desc":
-				l.reverseByDate();
-				isList = true;
-				System.out.println("item 생성역순서대로 정렬하였습니다.");
+				System.out.println("[ 알림 ] : 마감기한이 많이 남은 순서대로 정렬하였습니다.");
+				TodoUtil.listAll(l,"due_date",0);
 				break;
 				
 			case "ls_cate":
-				l.cate();
+				TodoUtil.listCateAll(l);
 				break;
 				
 			default:
-				System.out.println("정확한 명령어를 입력하세요. (도움말 - help)");
+				System.out.println("[ 알림 ] : 정확한 명령어를 입력하세요. (도움말 - help)");
 				break;
 			}
-			
-			if(isList) {
-				l.listAll(); 
-				System.out.println(); 
-				// isList가 true일 경우 즉, List가 정렬이 완료되면 list에 있는 item들을 모두 출력
-			}
 		} while (!quit);
-		TodoUtil.saveList(l, "todolist.txt");
 	}
 }
