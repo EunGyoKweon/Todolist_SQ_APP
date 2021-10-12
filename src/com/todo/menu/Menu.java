@@ -18,7 +18,11 @@ public class Menu {
         System.out.println("11. 카테고리 종류 출력 - ls_cate");
         System.out.println("12. 완료된 item 표시하기 - comp <item 번호>");
         System.out.println("13. 완료된 item 보기 - ls_comp");
-        System.out.println("14. 종료 - exit ");
+        System.out.println("14. 완료표시 없애기 - del_comp <item 번호>");
+        System.out.println("15. 여러 item 동시삭제 - mul_del <item 번호>");
+        System.out.println("16. 여러 item 동시체크 - mul_check <item 번호>");
+        System.out.println("17. 월별로 할 일 보기 - month <숫자>");
+        System.out.println("18. 종료 - exit ");
         System.out.println();
     }
     

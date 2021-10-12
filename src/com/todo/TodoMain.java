@@ -18,8 +18,6 @@ public class TodoMain {
 		TodoList l = new TodoList();
 		boolean quit = false;
 		
-		//TodoUtil.loadList(l, "todolist.txt"); // file load
-		
 		Menu.displaymenu();  // 메뉴 출력
 		do {
 			
@@ -97,6 +95,37 @@ public class TodoMain {
 				
 			case "ls_cate":
 				TodoUtil.listCateAll(l);
+				break;
+				
+			case "del_comp":
+				int del_comp = Integer.parseInt(st.nextToken());
+				TodoUtil.del_comp(l,del_comp);
+				break;
+				
+			case "mul_del":
+				while(st.hasMoreTokens()) {
+					int mul_del = Integer.parseInt(st.nextToken());
+					TodoUtil.deleteMulti(l,mul_del);
+				}
+				break;
+				
+			case "mul_check":
+				while(st.hasMoreTokens()) {
+					int mul_comp = Integer.parseInt(st.nextToken());
+					TodoUtil.completeItem(l,mul_comp);
+				}
+				break;
+				
+			case "month":
+				int month = Integer.parseInt(st.nextToken());
+				if(month<1 || month>12) {
+					System.out.println("[ 알림 ] : 잘못된 월을 입력하셨습니다.");
+				}
+				else {
+					String str_month = Integer.toString(month);
+					TodoUtil.find_monthItem(l,str_month);
+				}
+				
 				break;
 				
 			default:

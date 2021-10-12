@@ -23,7 +23,7 @@ public class TodoList {
 	// item 추가
 	public int addItem(TodoItem t) {		
 		
-		String sql="insert into todolistSQL (title, memo, category, current_date, due_date)"+"values(?,?,?,?,?);";
+		String sql="insert into todolistSQL (title, memo, category, current_date, due_date, friend, material)"+"values(?,?,?,?,?,?,?);";
 		PreparedStatement pstmt;
 		
 		int count=0;
@@ -35,6 +35,8 @@ public class TodoList {
 			pstmt.setString(3,t.getCategory());
 			pstmt.setString(4,t.getCurrent_date());
 			pstmt.setString(5,t.getDue_date());
+			pstmt.setString(6,t.getFriend());
+			pstmt.setString(7,t.getMaterial());
 			count=pstmt.executeUpdate();
 			pstmt.close();	
 			
@@ -44,7 +46,7 @@ public class TodoList {
 		return count;
 	}
 	
-	// item 중복체크
+	// item title 중복체크
 		public int isDuplicate(String title) {
 			int count=0;
 			PreparedStatement pstmt;
@@ -98,8 +100,10 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date = rs.getString("current_date");
+				String friend = rs.getString("friend");
+				String material = rs.getString("material");
 						
-				TodoItem t = new TodoItem(category, title, description, due_date);
+				TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -111,11 +115,95 @@ public class TodoList {
 		}
 		return list;
 	}
+	
+	// 완료된 item 체크표시 넣어주기
+		public ArrayList<TodoItem> findItem2(int num) {
+			ArrayList<TodoItem> list = new ArrayList<TodoItem>();
+			String sql="SELECT * FROM todolistSQL where id = ?;";
+			PreparedStatement pstmt;
+			int count=num;
+			try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, count);
+				ResultSet rs = pstmt.executeQuery();
+				while(rs.next()) {
+					int id=rs.getInt("id");
+					String category = rs.getString("category");
+					String title = rs.getString("title");
+					String description = rs.getString("memo");
+					String due_date = rs.getString("due_date");
+					String current_date = rs.getString("current_date");
+					String friend = rs.getString("friend");
+					String material = rs.getString("material");
+							
+					TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+					t.setId(id);
+					t.setCurrent_date(current_date);
+					list.add(t);
+				}
+				pstmt.close();	
+						
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			return list;
+		}
+	
+	// 체크표시 삭제
+		public int remove_check(TodoItem t) {
+			String sql="update todolistSQL set title=?,memo=?, category=?, current_date=?, due_date=?, friend=?, material=?"+"where id = ?;";
+			PreparedStatement pstmt;
+			int count=0;
+			try {
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1,t.getTitle());
+				pstmt.setString(2,t.getDesc());
+				pstmt.setString(3,t.getCategory());
+				pstmt.setString(4,t.getCurrent_date());
+				pstmt.setString(5,t.getDue_date());
+				pstmt.setString(6,t.getFriend());
+				pstmt.setString(7,t.getMaterial());
+				pstmt.setInt(8, t.getId());
+				count=pstmt.executeUpdate();
+				pstmt.close();	
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			return count;
+		}
 
+		
+		// item 체크표시 삭제
+		public int editItem2(TodoItem t) {
+			String sql="update todolistSQL set title=?,memo=?, category=?, current_date=?, due_date=?, friend=?, material=?"+"where id = ?;";
+			PreparedStatement pstmt;
+			int count=0;
+			try {
+				
+				pstmt = conn.prepareStatement(sql);
+				String str = t.getTitle().substring(0,t.getTitle().length()-3);
+				pstmt.setString(1,str);
+				pstmt.setString(2,t.getDesc());
+				pstmt.setString(3,t.getCategory());
+				pstmt.setString(4,t.getCurrent_date());
+				pstmt.setString(5,t.getDue_date());
+				pstmt.setString(6,t.getFriend());
+				pstmt.setString(7,t.getMaterial());
+				pstmt.setInt(8, t.getId());
+				count=pstmt.executeUpdate();
+				pstmt.close();	
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			return count;
+		}
 
 	// item 수정
 	public int editItem(TodoItem t) {
-		String sql="update todolistSQL set title=?,memo=?, category=?, current_date=?, due_date=?"+"where id = ?;";
+		String sql="update todolistSQL set title=?, memo=?, category=?, current_date=?, due_date=?, friend=?, material=?"+"where id = ?;";
 		PreparedStatement pstmt;
 		int count=0;
 		try {
@@ -126,7 +214,9 @@ public class TodoList {
 			pstmt.setString(3,t.getCategory());
 			pstmt.setString(4,t.getCurrent_date());
 			pstmt.setString(5,t.getDue_date());
-			pstmt.setInt(6, t.getId());
+			pstmt.setString(6,t.getFriend());
+			pstmt.setString(7,t.getMaterial());
+			pstmt.setInt(8,t.getId());
 			count=pstmt.executeUpdate();
 			pstmt.close();	
 			
@@ -174,8 +264,10 @@ public class TodoList {
 					String description = rs.getString("memo");
 					String due_date = rs.getString("due_date");
 					String current_date = rs.getString("current_date");
+					String friend = rs.getString("friend");
+					String material = rs.getString("material");
 					
-					TodoItem t = new TodoItem(category, title, description, due_date);
+					TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
 					t.setId(id);
 					t.setCurrent_date(current_date);
 					list.add(t);
@@ -187,6 +279,46 @@ public class TodoList {
 			}
 			return list;
 		}
+		
+		// 월에 해당하는 item 찾기
+		public ArrayList<TodoItem> month(String month){
+					ArrayList<TodoItem> list = new ArrayList<TodoItem>();
+					PreparedStatement pstmt;
+		
+					try {
+						String sql="SELECT * FROM todolistSQL";
+						pstmt = conn.prepareStatement(sql);
+						ResultSet rs=pstmt.executeQuery();
+						
+						while(rs.next()) {
+							int id=rs.getInt("id");
+							String category = rs.getString("category");
+							String title = rs.getString("title");
+							String description = rs.getString("memo");
+							String due_date = rs.getString("due_date");
+							String current_date = rs.getString("current_date");
+							String friend = rs.getString("friend");
+							String material = rs.getString("material");
+							String str = due_date.substring(5,7);
+							int str_int = Integer.parseInt(str);
+							int month_int = Integer.parseInt(month);
+							if(str_int==month_int) {
+								TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+								t.setId(id);
+								t.setCurrent_date(current_date);
+								list.add(t);
+							}
+							else {
+								
+							}
+						}
+						pstmt.close();	
+						
+					}catch(SQLException e) {
+						e.printStackTrace();
+					}
+					return list;
+				}
 	
 	// keyword 포함하는 item 찾기
 	public ArrayList<TodoItem> getList(String keyword) {
@@ -207,8 +339,11 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date = rs.getString("current_date");
+				String friend = rs.getString("friend");
+				String material = rs.getString("material");
 				
-				TodoItem t = new TodoItem(category, title, description, due_date);
+				TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+				
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -242,8 +377,11 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date = rs.getString("current_date");
+				String friend = rs.getString("friend");
+				String material = rs.getString("material");
 				
-				TodoItem t = new TodoItem(category, title, description, due_date);
+				TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+				
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -271,8 +409,11 @@ public class TodoList {
 				String description = rs.getString("memo");
 				String due_date = rs.getString("due_date");
 				String current_date = rs.getString("current_date");
+				String friend = rs.getString("friend");
+				String material = rs.getString("material");
 				
-				TodoItem t = new TodoItem(category, title, description, due_date);
+				TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+				
 				t.setId(id);
 				t.setCurrent_date(current_date);
 				list.add(t);
@@ -299,8 +440,11 @@ public class TodoList {
 					String description = rs.getString("memo");
 					String due_date = rs.getString("due_date");
 					String current_date = rs.getString("current_date");
+					String friend = rs.getString("friend");
+					String material = rs.getString("material");
 					
-					TodoItem t = new TodoItem(category, title, description, due_date);
+					TodoItem t = new TodoItem(category, title, description, due_date, friend, material);
+				
 					t.setId(id);
 					t.setCurrent_date(current_date);
 					list.add(t);

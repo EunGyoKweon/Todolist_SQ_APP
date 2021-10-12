@@ -9,18 +9,17 @@ public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
     private String desc;  // 내용
     private String current_date;  // item이 생성되는 시간
     private String category;  // item 카테고리 
-    private String due_date; // item 마감일자
+    private String due_date;  // item 카테고리 
+    private String friend; // item 마감일자
+    private String material; // item 마감일자
 
-    public TodoItem(String category){  // constructor, item의 제목과 내용을 입력받아서 객체 생성
-    	this.category = category;
-    } 
-    
-
-    public TodoItem(String category, String title, String desc, String due_date){  // constructor, item의 제목과 내용을 입력받아서 객체 생성
+    public TodoItem(String category, String title, String desc, String due_date, String friend, String material){ 
     	this.category = category;
     	this.title = title;
         this.desc = desc;
         this.due_date = due_date;
+        this.friend=friend;
+        this.material=material;
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
         this.current_date = f.format(new Date());  // 자동으로 생성
     } 
@@ -38,7 +37,28 @@ public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
     public void setId(int id) {
     	this.id=id;
     }
-    public int getId() {
+    
+    public String getFriend() {
+		return friend;
+	}
+
+
+	public void setFriend(String friend) {
+		this.friend = friend;
+	}
+
+
+	public String getMaterial() {
+		return material;
+	}
+
+
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+
+	public int getId() {
     	return id;
     }
     public String getCategory() {
@@ -83,7 +103,7 @@ public class TodoItem { // 각 item들은 3개의 member를 가지고있다.
     
 	@Override
 	public String toString() {
-		return id + ". " + "[ " + category + " ] / " + "[ 제목 ] : " + title + " / [ 내용 ] : " + desc + " << " + due_date + " >> [ item 생성시간 ] : " + current_date;	
+		return id + ". " + "[ " + category + " ], " + "[ 제목 ]:" + title + ", [ 내용 ]:" + desc + " <<" + due_date + ">> [ item 생성시간 ]:" + current_date + ", [ 함께하는 사람 ]:" + friend + ", [ 준비물 ]:" + material ;	
 	}
     
 }

@@ -21,6 +21,17 @@ import com.todo.dao.TodoList;
 public class TodoUtil {
 	
 	// item find
+		public static void find_monthItem(TodoList l, String str_month) {
+			int count=0;
+			for(TodoItem item : l.month(str_month)) {
+				System.out.println(item.toString());
+				count++;
+			}
+			System.out.printf("총 %d개의 항목을 찾았습니다.\n", count);
+			System.out.println();
+		}
+	
+	// item find
 	public static void findList(TodoList l, String keyword) {
 		int count=0;
 		for(TodoItem item : l.getList(keyword)) {
@@ -33,7 +44,7 @@ public class TodoUtil {
 	// item 새로 추가
 	public static void createItem(TodoList list) {
 		
-		String title, desc, category, due_date;
+		String title, desc, category, due_date, friend, material;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("\n"
@@ -62,7 +73,13 @@ public class TodoUtil {
 		System.out.print("[ 마감일자 ] : ");
 		due_date = sc.nextLine().trim(); // 내용은 line으로 입력받음 & trim => 좌우공백 제거
 		
-		TodoItem t = new TodoItem(category, title, desc, due_date);
+		System.out.print("[ 함께하는 사람 ] : ");
+		friend = sc.nextLine().trim(); // 내용은 line으로 입력받음 & trim => 좌우공백 제거
+		
+		System.out.print("[ 준비물 ] : ");
+		material = sc.nextLine().trim(); // 내용은 line으로 입력받음 & trim => 좌우공백 제거
+		
+		TodoItem t = new TodoItem(category, title, desc, due_date, friend, material);
 		if(list.addItem(t)>0) {
 			System.out.println("[ 알림 ] : item이 정상적으로 추가되었습니다.");
 			System.out.println("=======================================\n");
@@ -95,6 +112,15 @@ public class TodoUtil {
 			System.out.println("[ 경고 ] y 또는 n을 입력해주세요.");
 		}
 	}
+	
+	// item 삭제
+		public static void deleteMulti(TodoList l, int num) {
+			
+			if(l.deleteItem(num)>0) {
+				System.out.println("[ 알림 ] item이 정상적으로 삭제되었습니다.");
+				System.out.println("");
+			}
+		}
 
 
 	// item update (edit)
@@ -123,7 +149,13 @@ public class TodoUtil {
 		System.out.print("item의 새로운 마감일자를 입력하세요 : ");
 		String new_due_date = sc.nextLine().trim(); // line으로 입력받음.
 		
-		TodoItem t = new TodoItem(new_category, new_title, new_description, new_due_date);
+		System.out.print("함께할 사람들을 입력하세요 : ");
+		String new_friend = sc.nextLine().trim(); // line으로 입력받음.
+		
+		System.out.print("준비물을 입력하세요 : ");
+		String new_material = sc.nextLine().trim(); // line으로 입력받음.
+		
+		TodoItem t = new TodoItem(new_category, new_title, new_description, new_due_date, new_friend, new_material);
 		t.setId(num);
 		if(l.editItem(t)>0) {
 			System.out.println("[ 알림 ] item이 정상적으로 업데이트 되었습니다.");
@@ -131,6 +163,31 @@ public class TodoUtil {
 		}		
 	}
 	
+	// 완료한 item 체크 삭제하기
+			public static void del_comp(TodoList l, int num) {
+				for(TodoItem item : l.findItem2(num)) {
+					String str = item.getTitle().substring(item.getTitle().length()-3,item.getTitle().length());
+					String str1 = "[V]";
+					if(str.equals(str1)) {
+						if(l.editItem2(item)>0) {
+							
+							System.out.println("[ 알림 ] 완료체크를 삭제하였습니다.");
+							System.out.println("");
+						}
+						else {
+							System.out.println("[ 알림 ] 오류");
+							System.out.println("");
+						}
+					}
+					else {
+						System.out.println("[ 오류 ] 완료된 item이 아닙니다.");
+						System.out.println("");
+					}
+					
+				}
+				
+			}	
+		
 	// 카테고리 나열
 	public static void listCateAll(TodoList l) {
 		int count=0;
@@ -196,17 +253,22 @@ public class TodoUtil {
 	// 완료한 item 체크하기
 		public static void completeItem(TodoList l, int num) {
 			for(TodoItem item : l.findItem(num)) {
-				if(l.editItem(item)>0) {
-					
-					System.out.println("[ 알림 ] 체크를 완료하였습니다.");
-					System.out.println("");
+				String str = item.getTitle().substring(item.getTitle().length()-3,item.getTitle().length());
+				String str1 = "[V]";
+				if(str.equals(str1)) {
+					System.out.println("[ 알림 ] 이미 체크가 된 항목입니다.");
+					System.out.println("");					
 				}
 				else {
-					System.out.println("[ 알림 ] 오류");
-					System.out.println("");
+					if(l.editItem(item)>0) {
+						System.out.println("[ 알림 ] 체크를 완료하였습니다.");
+						System.out.println("");
+						}
+					else {
+						System.out.println("[ 알림 ] 오류");
+						System.out.println("");
+					}
 				}
-				
 			}
-			
 		}	
 }
